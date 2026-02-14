@@ -1625,6 +1625,8 @@
 <!-- No final do seu index.html, ANTES de fechar o </body> -->
 <!-- Lenis Scroll (já existente) -->
 <script src="https://unpkg.com/lenis@1.1.16/dist/lenis.min.js"></script>
+<!-- Lenis Scroll -->
+<script src="https://unpkg.com/lenis@1.1.16/dist/lenis.min.js"></script>
 
 <script>
     // ===== LENIS SCROLL SUAVE =====
@@ -1693,7 +1695,42 @@
     }
     
     function enviarMensagem() {
-        // ... seu código do chat ...
+        const input = document.getElementById('chatInput');
+        const mensagem = input.value.trim();
+        
+        if (mensagem === '') return;
+        
+        const chatMessages = document.getElementById('chatMessages');
+        const msgUsuario = document.createElement('div');
+        msgUsuario.className = 'message usuario';
+        msgUsuario.innerHTML = `<div class="message-content">${mensagem}</div>`;
+        chatMessages.appendChild(msgUsuario);
+        
+        input.value = '';
+        
+        setTimeout(() => {
+            const msgNexus = document.createElement('div');
+            msgNexus.className = 'message nexus';
+            
+            let resposta = '';
+            const msgLower = mensagem.toLowerCase();
+            
+            if (msgLower.includes('política') || msgLower.includes('politica') || msgLower.includes('nexvs')) {
+                resposta = 'Acionando estratégia NEXVS (Política). Podemos auxiliar com campanhas, gestão de mandato, análise de cenário e construção de coalizões. Deseja uma consultoria estratégica?';
+            } else if (msgLower.includes('marketing') || msgLower.includes('nexus°') || msgLower.includes('nexus grau')) {
+                resposta = 'Estratégia NEXUS° (Marketing) ativada. Trabalhamos posicionamento de marca, gestão de comunidades, campanhas de alto impacto e análise de tendências. Qual o desafio da sua marca?';
+            } else if (msgLower.includes('finanças') || msgLower.includes('financas') || msgLower.includes('nexus+') || msgLower.includes('nexus plus')) {
+                resposta = 'Estratégia NEXUS+ (Finanças) online. Estruturamos capital, gerenciamos riscos e desenvolvemos estratégias de crescimento sustentável. Como podemos fortalecer seu patrimônio?';
+            } else {
+                resposta = 'O NEXUS integra três frentes estratégicas: NEXVS (Política), NEXUS° (Marketing) e NEXUS+ (Finanças). Em qual delas podemos atuar para potencializar seus resultados?';
+            }
+            
+            msgNexus.innerHTML = `<div class="message-content">${resposta}</div>`;
+            chatMessages.appendChild(msgNexus);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 1000);
+        
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
     function verDemonstracao() {
@@ -1718,9 +1755,8 @@
         }, 500);
     }
 
-    // ===== CARREGAR FORMULÁRIO EXTERNO E INICIALIZAR ENVIO =====
+    // ===== CARREGAR FORMULÁRIO EXTERNO =====
     document.addEventListener('DOMContentLoaded', function() {
-        // Carrega o HTML do formulário
         fetch('contact-form.html')
             .then(response => {
                 if (!response.ok) {
@@ -1732,8 +1768,56 @@
                 // Injeta o HTML na div
                 document.getElementById('contact-form-container').innerHTML = html;
                 
-                // --- AGORA INICIALIZA O FORMULÁRIO (SCRIPT AQUI NO INDEX) ---
-                inicializarFormulario();
+                // --- AGORA EXECUTA O CÓDIGO DO FORMULÁRIO (SEU CÓDIGO ORIGINAL) ---
+                const scriptURL = "https://script.google.com/macros/s/AKfycbyHccJ6bMQqoF2_XIkcOjNGOSOcV8pJ45-Ukh0DYuRXwkVr2GYKAbjgeTcEsxEU3KA47Q/exec";
+                const form = document.forms['submit-to-google-sheet'];
+                
+                if (!form) {
+                    console.error('Formulário não encontrado!');
+                    return;
+                }
+
+                const successMsg = document.getElementById('form-message-success');
+                const warningMsg = document.getElementById('form-message-warning');
+                const btnSubmit = document.getElementById('submit-btn');
+
+                form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    
+                    // Inicia estado de carregamento
+                    btnSubmit.value = "Enviando...";
+                    btnSubmit.disabled = true;
+                    btnSubmit.style.opacity = "0.7";
+                    successMsg.style.display = 'none';
+                    warningMsg.style.display = 'none';
+
+                    // FAZ A REQUISIÇÃO E AGUARDA A RESPOSTA (IGUAL SEU CÓDIGO)
+                    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success!', data);
+                            successMsg.style.display = 'block';
+                            form.reset();
+                            btnSubmit.value = "Enviar Mensagem";
+                            btnSubmit.disabled = false;
+                            btnSubmit.style.opacity = "1";
+                            
+                            setTimeout(() => {
+                                successMsg.style.display = 'none';
+                            }, 5000);
+                        })
+                        .catch(error => {
+                            console.error('Error!', error.message);
+                            warningMsg.style.display = 'block';
+                            btnSubmit.value = "Enviar Mensagem";
+                            btnSubmit.disabled = false;
+                            btnSubmit.style.opacity = "1";
+                            
+                            setTimeout(() => {
+                                warningMsg.style.display = 'none';
+                            }, 5000);
+                        });
+                });
             })
             .catch(error => {
                 console.error('Erro:', error);
@@ -1744,58 +1828,6 @@
                 `;
             });
     });
-
-    // ===== FUNÇÃO DE INICIALIZAÇÃO DO FORMULÁRIO (SEU CÓDIGO QUE FUNCIONA) =====
-    function inicializarFormulario() {
-        const scriptURL = "https://script.google.com/macros/s/AKfycbyHccJ6bMQqoF2_XIkcOjNGOSOcV8pJ45-Ukh0DYuRXwkVr2GYKAbjgeTcEsxEU3KA47Q/exec";
-        const form = document.forms['submit-to-google-sheet'];
-        
-        if (!form) {
-            console.error('Formulário não encontrado após carregamento!');
-            return;
-        }
-
-        const successMsg = document.getElementById('form-message-success');
-        const warningMsg = document.getElementById('form-message-warning');
-        const btnSubmit = document.getElementById('submit-btn');
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            // Inicia estado de carregamento
-            btnSubmit.value = "Enviando...";
-            btnSubmit.disabled = true;
-            btnSubmit.style.opacity = "0.7";
-            successMsg.style.display = 'none';
-            warningMsg.style.display = 'none';
-
-            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success!', data);
-                    successMsg.style.display = 'block';
-                    form.reset();
-                    btnSubmit.value = "Enviar Mensagem";
-                    btnSubmit.disabled = false;
-                    btnSubmit.style.opacity = "1";
-                    
-                    setTimeout(() => {
-                        successMsg.style.display = 'none';
-                    }, 5000);
-                })
-                .catch(error => {
-                    console.error('Error!', error.message);
-                    warningMsg.style.display = 'block';
-                    btnSubmit.value = "Enviar Mensagem";
-                    btnSubmit.disabled = false;
-                    btnSubmit.style.opacity = "1";
-                    
-                    setTimeout(() => {
-                        warningMsg.style.display = 'none';
-                    }, 5000);
-                });
-        });
-    }
 
     // Previne scroll do body quando popup está aberto
     document.addEventListener('keydown', function(e) {
