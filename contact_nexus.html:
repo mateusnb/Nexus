@@ -17,6 +17,7 @@
                                     Sua mensagem foi enviada com sucesso! Obrigado.
                                 </div>
 
+                                <!-- FORMULÁRIO -->
                                 <form class="contactForm" id="submit-to-google-sheet" name="submit-to-google-sheet">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -71,14 +72,29 @@
     </div>
 </section>
 
+<!-- SCRIPT DE ENVIO - FICA AQUI NO MESMO ARQUIVO -->
 <script>
-    // Script específico do formulário (será executado quando carregado)
     (function() {
-        // --- CONFIGURAÇÃO DO GOOGLE SHEETS ---
-        const scriptURL = 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec'; // Substitua pela sua URL
-        const form = document.forms['submit-to-google-sheet'];
+        // ===== CONFIGURAÇÃO DO GOOGLE APPS SCRIPT =====
+        // !! SUBSTITUA PELA SUA URL DO WEB APP !!
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyHccJ6bMQqoF2_XIkcOjNGOSOcV8pJ45-Ukh0DYuRXwkVr2GYKAbjgeTcEsxEU3KA47Q/exec";
+
         
-        if (form) {
+        // Aguarda o DOM carregar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initForm);
+        } else {
+            initForm();
+        }
+
+        function initForm() {
+            const form = document.getElementById('submit-to-google-sheet');
+            
+            if (!form) {
+                console.error('Formulário não encontrado!');
+                return;
+            }
+
             const successMsg = document.getElementById('form-message-success');
             const warningMsg = document.getElementById('form-message-warning');
             const btnSubmit = document.getElementById('submit-btn');
@@ -86,6 +102,19 @@
             form.addEventListener('submit', e => {
                 e.preventDefault();
                 
+                // Validação básica
+                const name = form.querySelector('input[name="name"]').value.trim();
+                const email = form.querySelector('input[name="email"]').value.trim();
+                const subject = form.querySelector('select[name="subject"]').value;
+                const message = form.querySelector('textarea[name="message"]').value.trim();
+                
+                if (!name || !email || !subject || !message) {
+                    warningMsg.style.display = 'block';
+                    warningMsg.textContent = 'Por favor, preencha todos os campos.';
+                    setTimeout(() => { warningMsg.style.display = 'none'; }, 5000);
+                    return;
+                }
+
                 // Inicia estado de carregamento
                 btnSubmit.value = "Enviando...";
                 btnSubmit.disabled = true;
@@ -93,27 +122,41 @@
                 successMsg.style.display = 'none';
                 warningMsg.style.display = 'none';
 
-                fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                    .then(response => {
-                        console.log('Success!', response);
-                        successMsg.style.display = 'block';
-                        form.reset();
-                        btnSubmit.value = "Enviar Mensagem";
-                        btnSubmit.disabled = false;
-                        btnSubmit.style.opacity = "1";
-                        
-                        // Esconde a mensagem após 5 segundos
-                        setTimeout(() => {
-                            successMsg.style.display = 'none';
-                        }, 5000);
-                    })
-                    .catch(error => {
-                        console.error('Error!', error.message);
-                        warningMsg.style.display = 'block';
-                        btnSubmit.value = "Enviar Mensagem";
-                        btnSubmit.disabled = false;
-                        btnSubmit.style.opacity = "1";
-                    });
+                // Envia para o Google Apps Script
+                fetch(scriptURL, { 
+                    method: 'POST', 
+                    body: new FormData(form),
+                    mode: 'no-cors' // Importante para evitar erros de CORS
+                })
+                .then(() => {
+                    // Com no-cors, não conseguimos ler a resposta, mas assumimos sucesso
+                    console.log('Formulário enviado com sucesso');
+                    
+                    // Mostra mensagem de sucesso
+                    successMsg.style.display = 'block';
+                    
+                    // Limpa o formulário
+                    form.reset();
+                    
+                    // Restaura o botão
+                    btnSubmit.value = "Enviar Mensagem";
+                    btnSubmit.disabled = false;
+                    btnSubmit.style.opacity = "1";
+                    
+                    // Esconde a mensagem após 5 segundos
+                    setTimeout(() => {
+                        successMsg.style.display = 'none';
+                    }, 5000);
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    warningMsg.style.display = 'block';
+                    warningMsg.textContent = 'Erro ao enviar. Tente novamente.';
+                    
+                    btnSubmit.value = "Enviar Mensagem";
+                    btnSubmit.disabled = false;
+                    btnSubmit.style.opacity = "1";
+                });
             });
         }
     })();
