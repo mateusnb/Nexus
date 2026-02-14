@@ -1,14 +1,14 @@
-<!-- contact-form.html -->
+<!-- contact-form.html - Formulário de Contato NEXUS -->
 <section class="ftco-section">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="wrapper">
                     <div class="row no-gutters">
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             <div class="contact-wrap w-100 p-md-5 p-4">
-                                <h3>Contact us</h3>
-                                <p class="mb-4">We're open for any suggestion or just to have a chat</p>
+                                <h3 class="text-center" style="font-family: 'Playfair Display', serif; color: var(--borgonha);">Fale com o NEXUS</h3>
+                                <p class="mb-4 text-center">Estamos abertos para sugestões ou apenas para conversar</p>
                                 
                                 <div id="form-message-warning" class="mb-4" style="display:none; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px;">
                                     Erro ao enviar. Por favor, tente novamente.
@@ -19,48 +19,50 @@
 
                                 <form class="contactForm" id="submit-to-google-sheet" name="submit-to-google-sheet">
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <input type="text" class="form-control" name="name" placeholder="Nome" required>
+                                                <input type="text" class="form-control" name="name" placeholder="Nome" required
+                                                       style="width:100%; background:#3c3c44; border:1px solid rgba(255,255,255,0.1); padding:15px; border-radius:12px; color:white;">
                                             </div>
                                         </div>
                                         
-                                        <div class="col-md-12">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <input type="email" class="form-control" name="email" placeholder="Email" required>
+                                                <input type="email" class="form-control" name="email" placeholder="Email" required
+                                                       style="width:100%; background:#3c3c44; border:1px solid rgba(255,255,255,0.1); padding:15px; border-radius:12px; color:white;">
                                             </div>
                                         </div>
 
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <select class="form-control" name="subject" required>
-                                                    <option value="" disabled selected>Selecione o assunto</option>
-                                                    <option value="politica">Estratégia Política (NEXVS)</option>
-                                                    <option value="marketing">Estratégia de Marketing (NEXUS°)</option>
-                                                    <option value="financas">Estratégia Financeira (NEXUS+)</option>
-                                                    <option value="integracao">Integração Completa</option>
-                                                    <option value="outro">Outro Assunto</option>
+                                                <select class="form-control" name="subject" required
+                                                        style="width:100%; background:#3c3c44; border:1px solid rgba(255,255,255,0.1); padding:15px; border-radius:12px; color:white;">
+                                                    <option value="" disabled selected style="color:rgba(255,255,255,0.6);">Selecione o assunto</option>
+                                                    <option value="politica" style="color:white;">Estratégia Política (NEXVS)</option>
+                                                    <option value="marketing" style="color:white;">Estratégia de Marketing (NEXUS°)</option>
+                                                    <option value="financas" style="color:white;">Estratégia Financeira (NEXUS+)</option>
+                                                    <option value="integracao" style="color:white;">Integração Completa</option>
+                                                    <option value="outro" style="color:white;">Outro Assunto</option>
                                                 </select>
                                             </div>
                                         </div>
 
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <textarea class="form-control" name="message" rows="5" placeholder="Mensagem" required></textarea>
+                                                <textarea class="form-control" name="message" rows="5" placeholder="Mensagem" required
+                                                          style="width:100%; background:#3c3c44; border:1px solid rgba(255,255,255,0.1); padding:15px; border-radius:12px; color:white;"></textarea>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-12 text-center">
                                             <div class="form-group">
-                                                <input type="submit" id="submit-btn" value="Enviar Mensagem" class="btn btn-primary">
+                                                <input type="submit" id="submit-btn" value="Enviar Mensagem" 
+                                                       style="background:var(--gradiente-nexus); color:white; border:none; padding:15px 30px; border-radius:40px; font-weight:600; font-size:1rem; cursor:pointer; transition:all 0.3s; margin-top:20px;">
                                             </div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                        </div>
-                        <div class="col-lg-6 d-flex align-items-stretch">
-                            <div class="info-wrap w-100 p-5 img" style="background-image:url('./assets/contact-image.webp')"></div>
                         </div>
                     </div>
                 </div>
@@ -70,38 +72,49 @@
 </section>
 
 <script>
-    // --- CONFIGURAÇÃO DO COCKPIT ---
-    const scriptURL = 'COLE_AQUI_SUA_URL_DO_WEB_APP';
-    const form = document.forms['submit-to-google-sheet'];
-    const successMsg = document.getElementById('form-message-success');
-    const warningMsg = document.getElementById('form-message-warning');
-    const btnSubmit = document.getElementById('submit-btn');
+    // Script específico do formulário (será executado quando carregado)
+    (function() {
+        // --- CONFIGURAÇÃO DO GOOGLE SHEETS ---
+        const scriptURL = 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec'; // Substitua pela sua URL
+        const form = document.forms['submit-to-google-sheet'];
+        
+        if (form) {
+            const successMsg = document.getElementById('form-message-success');
+            const warningMsg = document.getElementById('form-message-warning');
+            const btnSubmit = document.getElementById('submit-btn');
 
-    if (form) {
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            // Inicia estado de carregamento
-            btnSubmit.value = "Enviando...";
-            btnSubmit.disabled = true;
-            successMsg.style.display = 'none';
-            warningMsg.style.display = 'none';
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                
+                // Inicia estado de carregamento
+                btnSubmit.value = "Enviando...";
+                btnSubmit.disabled = true;
+                btnSubmit.style.opacity = "0.7";
+                successMsg.style.display = 'none';
+                warningMsg.style.display = 'none';
 
-            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success!', data);
-                    successMsg.style.display = 'block';
-                    form.reset();
-                    btnSubmit.value = "Enviar Mensagem";
-                    btnSubmit.disabled = false;
-                })
-                .catch(error => {
-                    console.error('Error!', error.message);
-                    warningMsg.style.display = 'block';
-                    btnSubmit.value = "Enviar Mensagem";
-                    btnSubmit.disabled = false;
-                });
-        });
-    }
+                fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                    .then(response => {
+                        console.log('Success!', response);
+                        successMsg.style.display = 'block';
+                        form.reset();
+                        btnSubmit.value = "Enviar Mensagem";
+                        btnSubmit.disabled = false;
+                        btnSubmit.style.opacity = "1";
+                        
+                        // Esconde a mensagem após 5 segundos
+                        setTimeout(() => {
+                            successMsg.style.display = 'none';
+                        }, 5000);
+                    })
+                    .catch(error => {
+                        console.error('Error!', error.message);
+                        warningMsg.style.display = 'block';
+                        btnSubmit.value = "Enviar Mensagem";
+                        btnSubmit.disabled = false;
+                        btnSubmit.style.opacity = "1";
+                    });
+            });
+        }
+    })();
 </script>
