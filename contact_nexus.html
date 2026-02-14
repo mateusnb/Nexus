@@ -1,5 +1,4 @@
-<!-- contact-form.html - Formulário de Contato NEXUS -->
-<!-- contact-form.html - Formulário de Contato NEXUS -->
+<!-- contact-form.html - Apenas o HTML do formulário -->
 <section class="ftco-section">
     <div class="container">
         <div class="row justify-content-center">
@@ -18,7 +17,7 @@
                                     Sua mensagem foi enviada com sucesso! Obrigado.
                                 </div>
 
-                                <!-- FORMULÁRIO COM SEUS CAMPOS: Nome, Email, Assunto, Mensagem -->
+                                <!-- FORMULÁRIO COM SEUS CAMPOS -->
                                 <form class="contactForm" id="submit-to-google-sheet" name="submit-to-google-sheet">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -72,41 +71,3 @@
         </div>
     </div>
 </section>
-
-<!-- SCRIPT DE ENVIO - IDÊNTICO AO SEU QUE FUNCIONA -->
-<script>
-
- <script>
-        // --- CONFIGURAÇÃO DO COCKPIT ---
-   const scriptURL = "https://script.google.com/macros/s/AKfycbyHccJ6bMQqoF2_XIkcOjNGOSOcV8pJ45-Ukh0DYuRXwkVr2GYKAbjgeTcEsxEU3KA47Q/exec";
-        const form = document.forms['submit-to-google-sheet'];
-        const successMsg = document.getElementById('form-message-success');
-        const warningMsg = document.getElementById('form-message-warning');
-        const btnSubmit = document.getElementById('submit-btn');
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            // Inicia estado de carregamento
-            btnSubmit.value = "Sending...";
-            btnSubmit.disabled = true;
-            successMsg.style.display = 'none';
-            warningMsg.style.display = 'none';
-
-            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success!', data);
-                    successMsg.style.display = 'block'; // Mostra mensagem de sucesso
-                    form.reset();
-                    btnSubmit.value = "Send Message";
-                    btnSubmit.disabled = false;
-                })
-                .catch(error => {
-                    console.error('Error!', error.message);
-                    warningMsg.style.display = 'block'; // Mostra mensagem de erro
-                    btnSubmit.value = "Send Message";
-                    btnSubmit.disabled = false;
-                });
-        });
-    </script>
